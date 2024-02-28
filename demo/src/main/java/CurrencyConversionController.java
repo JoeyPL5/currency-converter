@@ -1,4 +1,4 @@
-package com.example.demo;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,12 +12,12 @@ public class CurrencyConversionController {
 
     @Autowired
     public CurrencyConversionController(CurrencyConversionService currencyConversionService) {
-        this.currencyConversionService = currencyConversionService;
+        this.conversionService = currencyConversionService;
     }
 
     @GetMapping("/convert")
     public String convertCurrency(@RequestParam String from, @RequestParam String to, double amount) {
-        double convertedAmount = conversionService.convert(from, to, amount);
+        double convertedAmount = conversionService.convertCurrency(from, to, amount);
         return amount + " " + from + " equals " + convertedAmount + " " + to;
     }
 }
