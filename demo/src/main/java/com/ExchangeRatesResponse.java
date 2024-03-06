@@ -2,13 +2,13 @@ package com;
 import java.util.Map;
 
 public class ExchangeRatesResponse {
-    private Map<String, Double> rates;
+    private Map<String, Double> data;
 
-    public Map<String, Double> getRates() {
-        return rates;
+    public Map<String, Double> getData() {
+        return data;
     }
 
-    public void setRates(Map<String, Double> rates) {
-        this.rates = rates;
+    public void setData(Map<String, Double> data) {
+        this.data = data;
     }
 }

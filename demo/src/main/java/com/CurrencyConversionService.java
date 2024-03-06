@@ -1,45 +1,54 @@
 package com;
-
-
+import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import com.Util.StringUtil;
+
+import com.google.gson.Gson;
 
 @Service
 public class CurrencyConversionService {
-    @Value("${exchange-rates-api.key}")
+    private final RestTemplate restTemplate;
+    
     private String apiKey;
 
-    @Value("${exchange-rates-api.base}")
     private String apiBase;
 
-    private final RestTemplate restTemplate;
-
-    public CurrencyConversionService(RestTemplate restTemplate) {
+    public CurrencyConversionService(RestTemplate restTemplate, 
+                                    @Value("${exchange-api.key}") String key, 
+                                    @Value("${exchange-api.base}") String base) {
         this.restTemplate = restTemplate;
+        this.apiKey = key;
+        this.apiBase = base;
     }
 
     /**
-     * Acquires the exchange rates for the given base and target currencies from the RESTful API.
+     * Acquires the exchange rate from the base currency to the target currency(s) from the RESTful API.
      * 
      * @param baseCurrency currency to exchange from
-     * @param targetCurrency currency to exchange to
-     * @return an ExchangeRatesResponse object with the corresponding exchange rates
-     * @throws IllegalArgumentException if unable to fetch rates for given parameters
+     * @param targetCurrency currency(s) to exchange to
+     * @return an ExchangeRatesResponse object with the corresponding exchange rate(s)
+     * @throws IllegalArgumentException if unable to fetch rates for given parameter
      */
     public ExchangeRatesResponse getExchangeRates(String baseCurrency, String targetCurrency) throws IllegalArgumentException {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiBase)
-            .queryParam("base", baseCurrency)
-            .queryParam("symbols", targetCurrency)
-            .queryParam("access_key", apiKey);
+            .queryParam("base_currency", baseCurrency)
+            .queryParam("currencies", targetCurrency)
+            .queryParam("apikey", apiKey);
         String url = builder.toUriString();
-        ExchangeRatesResponse response = restTemplate.getForObject(url, ExchangeRatesResponse.class);
+    
+        ResponseEntity<String> entity = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+        String body = entity.getBody();
+        Gson gson = new Gson();;
+        ExchangeRatesResponse response = gson.fromJson(body, ExchangeRatesResponse.class);
 
-        if (response != null && response.getRates() != null && (response.getRates().size() == 2)) {
+        if (response != null && response.getData() != null) {
             return response;
         } else {
             throw new IllegalArgumentException("Unable to fetch exchange rates for given parameters.\n");
@@ -47,18 +56,38 @@ public class CurrencyConversionService {
     }
 
     /**
-     * Converts the given base currency to the given target currency for the given amount.
+     * Acquires the exchange rates from the base currency to the target currencies from the RESTful API.
      * 
-     * @param baseCurrency the currency type to convert from
-     * @param targetCurrency the currency type to convert to
-     * @param amount the amount of the base currency to convert
-     * @return the converted currency
+     * @param baseCurrency currency to exchange from
+     * @param targetCurrencies currencies to exchange to
+     * @return an ExchangeRatesResponse object with the corresponding exchange rates
+     * @throws IllegalArgumentException if unable to fetch rates for given parameter
      */
-    public double convertCurrency(String baseCurrency, String targetCurrency, double amount) throws IllegalArgumentException {
-        ExchangeRatesResponse exchangeRates = getExchangeRates(baseCurrency, targetCurrency);
-        Map<String, Double> rates = exchangeRates.getRates();
-        double baseRate = rates.get(baseCurrency);
-        double targetRate = rates.get(targetCurrency);
-        return (amount * (1 / baseRate)) * targetRate;
+    public ExchangeRatesResponse getExchangeRates(String baseCurrency, String... targetCurrencies) throws IllegalArgumentException {
+        String targets = StringUtil.commaSeparatedString(targetCurrencies);
+        return getExchangeRates(baseCurrency, targets);
+    }
+
+    /**
+     * Converts the given base currency to the given target currency(s) for the given amount.
+     * 
+     * @param amount the amount of the base currency to convert
+     * @param baseCurrency the currency type to convert from
+     * @param targetCurrencies the currency type to convert to
+     * @return a Map of the converted currency(s)
+     */
+    public Map<String, Double> convertCurrency(double amount, String baseCurrency, String... targetCurrencies) {
+        int targetsLen = targetCurrencies.length;
+        ExchangeRatesResponse exchangeRates = getExchangeRates(baseCurrency, targetCurrencies);
+        Map<String, Double> rates = exchangeRates.getData();
+        HashMap<String, Double> convertedAmounts = new HashMap<String, Double>();
+        for (int i = 0; i < targetsLen; i++) {
+            try {
+                convertedAmounts.put(targetCurrencies[i], amount * rates.get(targetCurrencies[i]));
+            } catch (NullPointerException e) {
+                convertedAmounts.put(targetCurrencies[i], -1.0);
+            }
+        }
+        return convertedAmounts;
     }
 }
