@@ -1,3 +1,4 @@
+package com;
 
 
 import java.util.Map;
@@ -18,7 +19,6 @@ public class CurrencyConversionService {
 
     private final RestTemplate restTemplate;
 
-    @Autowired
     public CurrencyConversionService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -29,7 +29,7 @@ public class CurrencyConversionService {
      * @param baseCurrency currency to exchange from
      * @param targetCurrency currency to exchange to
      * @return an ExchangeRatesResponse object with the corresponding exchange rates
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if unable to fetch rates for given parameters
      */
     public ExchangeRatesResponse getExchangeRates(String baseCurrency, String targetCurrency) throws IllegalArgumentException {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiBase)

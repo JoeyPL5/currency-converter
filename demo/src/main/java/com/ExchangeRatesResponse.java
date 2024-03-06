@@ -1,3 +1,4 @@
+package com;
 import java.util.Map;
 
 public class ExchangeRatesResponse {
