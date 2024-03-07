@@ -19,7 +19,8 @@ public class CurrencyConversionController {
     }
 
     /**
-     * Utilizes the CurrencyConversionService to output the converted currency values for the given request parameters. 
+     * Establishes the convert endpoint and utilizes the CurrencyConversionService to output the converted currency values 
+     * for the given request parameters.
      * 
      * @param amount the value of the currency to convert
      * @param from the base currency to convert from   
