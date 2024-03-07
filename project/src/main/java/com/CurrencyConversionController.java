@@ -23,13 +23,21 @@ public class CurrencyConversionController {
      * for the given request parameters.
      * 
      * @param amount the value of the currency to convert
+     * @param date the date to retrieve historical rates from (optional)
      * @param from the base currency to convert from   
      * @param to the target currency(s) to convert to
      * @return the result of the currency conversion(s)
+     * @throws IllegalArgumentException if the conversion was unsuccessful for the given parameters
      */
     @GetMapping(value = "/convert", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String convertCurrency(@RequestParam double amount, @RequestParam String from, @RequestParam String... to) {
-        Map<String, Double> convertedAmounts = conversionService.convertCurrency(amount, from, to);
+    public String convertCurrency(@RequestParam double amount, @RequestParam(required = false) String date, @RequestParam String from, @RequestParam String... to) throws IllegalArgumentException {
+        Map<String, Double> convertedAmounts;
+        if (date != null) {
+            convertedAmounts = conversionService.convertCurrency(amount, new DateString(date), from, to);
+            System.out.println("Here");
+        } else {
+            convertedAmounts = conversionService.convertCurrency(amount, from, to);
+        }
         String output = amount + " " + from + " equals:\n";
         DecimalFormat df = new DecimalFormat("#.##");
         for (Map.Entry<String, Double> entry: convertedAmounts.entrySet()) {
