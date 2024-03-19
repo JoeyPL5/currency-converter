@@ -3,11 +3,14 @@ package com;
 
 import java.text.DecimalFormat;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.Util.DateString;
 
 @RestController
 public class CurrencyConversionController {
@@ -47,5 +50,14 @@ public class CurrencyConversionController {
             }
         }
         return output;
+    }
+
+    /**
+     * Establishes the endpoint for retrieving the available currencies from the API.
+     * @return the available currencies
+     */
+    @GetMapping("/currencies")
+    public String[] getCurrencies() {
+        return conversionService.getAvailableExchangeRates();
     }
 }

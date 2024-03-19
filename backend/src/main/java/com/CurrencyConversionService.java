@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -167,9 +168,10 @@ public class CurrencyConversionService {
     /**
      * Fetches the available currencies from the API.
      * 
-     * @return a Set containing Strings representing currencies
+     * @return an array of Strings representing currencies
      */
-    public Set<String> getAvailableExchangeRates() {
+    @Cacheable("currencies")
+    public String[] getAvailableExchangeRates() {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiBase)
             .queryParam("apikey", apiKey);
         String url = builder.toUriString();
@@ -177,6 +179,6 @@ public class CurrencyConversionService {
         String body = entity.getBody();
         Gson gson = new Gson();;
         CurrenciesResponse response = gson.fromJson(body, CurrenciesResponse.class);
-        return response.getCurrencies().keySet();
+        return response.getCurrencies();
     }
 }
