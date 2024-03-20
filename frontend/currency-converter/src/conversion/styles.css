@@ -1,0 +1,11 @@
+.conversion-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.output-text {
+    text-align: center;
+    color: white;
+    font-family: 'Franklin Gothic Medium', sans-serif;
+}
