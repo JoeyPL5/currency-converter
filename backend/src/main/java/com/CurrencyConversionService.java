@@ -181,4 +181,28 @@ public class CurrencyConversionService {
         CurrenciesResponse response = gson.fromJson(body, CurrenciesResponse.class);
         return response.getCurrencies();
     }
+
+    /**
+     * Fetches historical exchange rates for a specified time period.
+     *
+     * @param startDate    The start date of the period (inclusive)
+     * @param endDate      The end date of the period (inclusive)
+     * @param baseCurrency The currency to exchange from
+     * @param targetCurrency  The currency to exchange to
+     * @return A map of dates to exchange rates (Date -> Double)
+     * @throws IllegalArgumentException if unable to fetch rates
+     */
+    public Map<DateString, Double> getHistoricalExchangeRates(DateString startDate, DateString endDate, String baseCurrency, String targetCurrency) throws IllegalArgumentException {
+        Map<DateString, Double> historicalRates = new HashMap<>();
+        for (DateString date = startDate; date.compareTo(endDate) <= 0; date = date.nextDay()) {
+            String url = buildQuery(date, baseCurrency, targetCurrency);
+            ExchangeRatesResponse response = sendExchangeRatesQuery(url); 
+            if (response.getData().containsKey(targetCurrency)) {
+                historicalRates.put(date, response.getData().get(targetCurrency));
+            } else {
+                throw new IllegalArgumentException("Unable to fetch historical rates for given parameters.");
+            }
+        }
+        return historicalRates;
+    }
 }
