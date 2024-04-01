@@ -1,5 +1,8 @@
 package com.Util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class StringUtil {
 
     /**
@@ -19,4 +22,18 @@ public class StringUtil {
         }
         return finalString.toString();
     }
+
+    /**
+     * 
+     * @param <T>
+     * @param map
+     * @return
+     */
+    public static <T> Map<String, T> dateStringMapToString(Map<DateString, T> map) {
+        Map<String, T> newMap = new HashMap<String, T>();
+        for (DateString key : map.keySet()) {
+            newMap.put(key.getDate(), map.get(key));
+        }
+        return newMap;
+    } 
 }
