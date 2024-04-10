@@ -124,6 +124,7 @@ public class CurrencyConversionService {
      * @return a Map of the converted currency(s)
      * @throws IllegalArgumentException if unable to convert currency with given parameters
      */
+    @Cacheable("conversion")
     public Map<String, Double> convertCurrency(double amount, String baseCurrency, String... targetCurrencies) throws IllegalArgumentException {
         ExchangeRatesResponse response = getExchangeRates(baseCurrency, targetCurrencies);
         return convertEachRate(amount, response);
@@ -139,6 +140,7 @@ public class CurrencyConversionService {
      * @return a Map of the converted currency(s)
      * @throws IllegalArgumentException if unable to convert currency with given parameters
      */
+    @Cacheable("conversion")
     public Map<String, Double> convertCurrency(double amount, DateString date, String baseCurrency, String... targetCurrencies) throws IllegalArgumentException {
         ExchangeRatesResponse response = getExchangeRates(date, baseCurrency, targetCurrencies);
         return convertEachRate(amount, response);
@@ -192,6 +194,7 @@ public class CurrencyConversionService {
      * @return A map of dates to exchange rates (Date -> Double)
      * @throws IllegalArgumentException if unable to fetch rates
      */
+    @Cacheable("historical-rate-data")
     public Map<DateString, Double> getHistoricalExchangeRates(DateString startDate, DateString endDate, String baseCurrency, String targetCurrency) throws IllegalArgumentException {
         Map<DateString, Double> historicalRates = new HashMap<>();
         int interval = startDate.compareTo(endDate) / 10;
