@@ -1,16 +1,14 @@
 import './App.css'
-import currencyconversionlogo from './images/currencyconversionlogo.png'
 import Conversion from './conversion'
 
 function App () {
   return (
     <div className='App'>
       <header className='App-header'>
-        <p color='black'>Joseph Pierre-Louis's Currency Converter</p>
-
+        <p className='app-title'>Currency Converter</p>
         <img
           id='logo'
-          src={currencyconversionlogo}
+          src='/images/currencyconversionlogo.png'
           className='App-logo'
           alt='logo'
         />

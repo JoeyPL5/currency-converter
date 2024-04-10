@@ -29,7 +29,7 @@ function ConversionButton ({ currencies, amount, onConversion }) {
 
   return (
     <div>
-      <button onClick={handleConversion}>Convert</button>
+      <button className='conversion-button' onClick={handleConversion}>Convert</button>
     </div>
   )
 }

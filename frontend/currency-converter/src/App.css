@@ -25,16 +25,11 @@
   font-family: 'Franklin Gothic Medium', sans-serif;
 }
 
+.app-title {
+  margin-bottom: 10px;
+}
+
 .Conversion-buttons {
   margin-top: 30px;
   align-items: center;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

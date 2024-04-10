@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { BACKEND_URL } from '../Constants'
 
-function SelectableCurrency ({ onSelectCurrency}) {
-  const [selectedCurrency, setSelectedCurrency] = useState('')
+function SelectableCurrency ({ onSelectCurrency, selected }) {
   const [currencies, setCurrencies] = useState([])
 
   useEffect(() => {
@@ -19,13 +18,12 @@ function SelectableCurrency ({ onSelectCurrency}) {
   })
 
   const handleOptionChange = event => {
-    setSelectedCurrency(event.target.value)
     onSelectCurrency(event.target.value)
   }
 
   return (
     <div>
-      <select value={selectedCurrency} onChange={handleOptionChange}>
+      <select className="selectable-currency" value={selected} onChange={handleOptionChange}>
         <option value=''>Select Currency</option>
         {currencies.map(option => (
           <option key={option} value={option}>

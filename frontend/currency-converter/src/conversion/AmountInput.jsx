@@ -13,11 +13,11 @@ function AmountInput ({ onAmountChange }) {
   }
 
   return (
-    <input
+    <input className='amount-input'
       type='text'
       value={value}
       onChange={handleChange}
-      placeholder='1.00'
+      placeholder={'0.00'}
     />
   )
 } export default AmountInput;
