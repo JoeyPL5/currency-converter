@@ -183,7 +183,7 @@ public class CurrencyConversionService {
     }
 
     /**
-     * Fetches historical exchange rates for a specified time period.
+     * Fetches historical exchange rates for a specified time period. Returns a maximum of 10 data points across the range. 
      *
      * @param startDate    The start date of the period (inclusive)
      * @param endDate      The end date of the period (inclusive)
@@ -194,7 +194,8 @@ public class CurrencyConversionService {
      */
     public Map<DateString, Double> getHistoricalExchangeRates(DateString startDate, DateString endDate, String baseCurrency, String targetCurrency) throws IllegalArgumentException {
         Map<DateString, Double> historicalRates = new HashMap<>();
-        for (DateString date = startDate; date.compareTo(endDate) <= 0; date = date.nextDay()) {
+        int interval = startDate.compareTo(endDate) / 10;
+        for (DateString date = startDate; historicalRates.size() <= 10; date = date.incrementDays(interval)) { 
             String url = buildQuery(date, baseCurrency, targetCurrency);
             ExchangeRatesResponse response = sendExchangeRatesQuery(url); 
             if (response.getData().containsKey(targetCurrency)) {

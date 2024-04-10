@@ -49,4 +49,17 @@ public class DateString implements Comparable<DateString> {
         calendar.add(Calendar.DATE, 1);
         return new DateString(format.format(calendar.getTime()));
     }
+
+    /**
+     * Calculates the next n days from the current date represented by this DateString object.
+     * 
+     * @param numDays the number of days to move forward
+     * @return a new DateString object representing the new day
+     */
+    public DateString incrementDays(int numDays) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(this.dateValue);
+        calendar.add(Calendar.DATE, numDays);
+        return new DateString(format.format(calendar.getTime()));
+    }
 }

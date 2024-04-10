@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -74,10 +73,10 @@ public class CurrencyConversionController {
      */
     @GetMapping("/historical-rates")
     public Map<String, Double> getHistoricalExchangeRates(
-            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") DateString startDate,
-            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") DateString endDate,
-            @RequestParam("baseCurrency") String baseCurrency,
-            @RequestParam("targetCurrency") String targetCurrency) {
+            @RequestParam("start") @DateTimeFormat(pattern = "yyyy-MM-dd") DateString startDate,
+            @RequestParam("end") @DateTimeFormat(pattern = "yyyy-MM-dd") DateString endDate,
+            @RequestParam("from") String baseCurrency,
+            @RequestParam("to") String targetCurrency) {
         Map<DateString, Double> historicalRates = conversionService.getHistoricalExchangeRates(startDate, endDate, baseCurrency, targetCurrency);
         return StringUtil.dateStringMapToString(historicalRates);
     }
