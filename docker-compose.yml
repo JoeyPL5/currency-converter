@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - exchange-rates-api-key=fca_live_GRyz7QDkQYpxKs0esOJQ3B6pTBZTPoFpMadlnmpg
+    volumes:
+      - ./backend/target:/tmp
+
+  frontend:
+    build:
+      context: ./frontend/currency-converter
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    tty: true
